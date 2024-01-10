@@ -42,6 +42,7 @@ jobs:
           - glass
           - hnswlib
           - kdtree
+          - lantern
           - luceneknn
           - milvus
           - mrpt
