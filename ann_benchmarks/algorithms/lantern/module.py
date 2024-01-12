@@ -15,7 +15,7 @@ class Lantern(BaseANN):
         self._cur = None
 
         if metric == "angular":
-            self._query = "SELECT id FROM items ORDER BY embedding <-> %s::real[] LIMIT %s"
+            self._query = "SELECT id FROM items ORDER BY embedding <=> %s::real[] LIMIT %s"
         elif metric == "euclidean":
             self._query = "SELECT id FROM items ORDER BY embedding <-> %s::real[] LIMIT %s"
         else:

@@ -23,6 +23,7 @@ RUN service postgresql start && \
     psql -c "CREATE USER ann WITH ENCRYPTED PASSWORD 'ann'" && \
     psql -c "CREATE DATABASE ann" && \
     psql -c "GRANT ALL PRIVILEGES ON DATABASE ann TO ann" && \
+    psql -d ann -c "GRANT ALL ON SCHEMA public TO ann" && \
     psql -d ann -c "CREATE EXTENSION vector" && \
     psql -c "ALTER USER ann SET maintenance_work_mem = '5GB'" && \
     psql -c "ALTER USER ann SET work_mem = '2GB'" && \
