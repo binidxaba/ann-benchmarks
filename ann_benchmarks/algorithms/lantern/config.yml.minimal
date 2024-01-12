@@ -1,0 +1,13 @@
+float:
+  any:
+  - base_args: ['@metric']
+    constructor: Lantern
+    disabled: false
+    docker_tag: ann-benchmarks-lantern
+    module: ann_benchmarks.algorithms.lantern
+    name: lantern
+    run_groups:
+      M-16:
+        arg_groups: [{M: 16, efConstruction: 200}]
+        args: {}
+        query_args: [[10]]
