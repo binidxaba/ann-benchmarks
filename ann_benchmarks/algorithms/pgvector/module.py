@@ -35,10 +35,12 @@ class PGVector(BaseANN):
                 copy.write_row((i, embedding))
         print("creating index...")
         if self._metric == "angular":
+            cur.execute("SET max_parallel_maintenance_workers = 7");
             cur.execute(
                 "CREATE INDEX ON items USING hnsw (embedding vector_cosine_ops) WITH (m = %d, ef_construction = %d)" % (self._m, self._ef_construction)
             )
         elif self._metric == "euclidean":
+            cur.execute("SET max_parallel_maintenance_workers = 7");
             cur.execute("CREATE INDEX ON items USING hnsw (embedding vector_l2_ops) WITH (m = %d, ef_construction = %d)" % (self._m, self._ef_construction))
         else:
             raise RuntimeError(f"unknown metric {self._metric}")

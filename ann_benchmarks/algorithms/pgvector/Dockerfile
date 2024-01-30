@@ -2,9 +2,7 @@ FROM ann-benchmarks
 
 # https://github.com/pgvector/pgvector/blob/master/Dockerfile
 
-RUN git clone https://github.com/pgvector/pgvector /tmp/pgvector && \
-  cd /tmp/pgvector && \
-  git checkout tags/v0.5.1 -b v0.5.1
+RUN git clone --branch v0.6.0 https://github.com/pgvector/pgvector /tmp/pgvector
 
 RUN apt-get -y install lsb-release wget curl
 RUN sh -c 'curl -fSsL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | tee /usr/share/keyrings/postgresql.gpg > /dev/null'
@@ -25,7 +23,7 @@ RUN service postgresql start && \
     psql -c "GRANT ALL PRIVILEGES ON DATABASE ann TO ann" && \
     psql -d ann -c "GRANT ALL ON SCHEMA public TO ann" && \
     psql -d ann -c "CREATE EXTENSION vector" && \
-    psql -c "ALTER USER ann SET maintenance_work_mem = '5GB'" && \
+    psql -c "ALTER USER ann SET maintenance_work_mem = '8GB'" && \
     psql -c "ALTER USER ann SET work_mem = '2GB'" && \
     psql -c "ALTER SYSTEM SET shared_buffers = '12GB'"
 USER root

@@ -30,7 +30,7 @@ RUN service postgresql start && \
     psql -c "GRANT ALL PRIVILEGES ON DATABASE ann TO ann" && \
     psql -d ann -c "GRANT ALL ON SCHEMA public TO ann" && \
     psql -d ann -c "CREATE EXTENSION lantern" && \
-    psql -c "ALTER USER ann SET maintenance_work_mem = '5GB'" && \
+    psql -c "ALTER USER ann SET maintenance_work_mem = '8GB'" && \
     psql -c "ALTER USER ann SET work_mem = '2GB'" && \
     psql -c "ALTER SYSTEM SET shared_buffers = '12GB'"
 USER root
