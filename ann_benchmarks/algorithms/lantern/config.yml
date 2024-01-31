@@ -7,11 +7,11 @@ float:
     module: ann_benchmarks.algorithms.lantern
     name: lantern
     run_groups:
+      M-8:
+        arg_groups: [{M: 8, efConstruction: 128}]
+        args: {}
+        query_args: [[128]]
       M-16:
-        arg_groups: [{M: 16, efConstruction: 200}]
+        arg_groups: [{M: 16, efConstruction: 128}]
         args: {}
-        query_args: [[10, 20, 40, 80, 120, 200, 400]]
-      M-24:
-        arg_groups: [{M: 24, efConstruction: 200}]
-        args: {}
-        query_args: [[10, 20, 40, 80, 120, 200, 400]]
+        query_args: [[128]]

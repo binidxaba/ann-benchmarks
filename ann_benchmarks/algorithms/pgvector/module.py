@@ -32,6 +32,8 @@ class PGVector(BaseANN):
         print("copying data...")
         with cur.copy("COPY items (id, embedding) FROM STDIN") as copy:
             for i, embedding in enumerate(X):
+                if i >= 100000:
+                    break
                 copy.write_row((i, embedding))
         print("creating index...")
         if self._metric == "angular":

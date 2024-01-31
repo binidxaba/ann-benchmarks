@@ -31,17 +31,19 @@ class Lantern(BaseANN):
         print("copying data...")
         with cur.copy("COPY items (id, embedding) FROM STDIN") as copy:
             for i, embedding in enumerate(X):
+                if i >= 100000:
+                    break
                 copy.write_row((i, embedding.tolist()))
         print("creating index...")
         if self._metric == "angular":
-            build_ix_cmd = "/tmp/lantern/build/lantern-create-index --uri postgresql://ann:ann@127.0.0.1:5432/ann" \
+            build_ix_cmd = "/tmp/lantern/build/lantern-cli create-index --uri postgresql://ann:ann@127.0.0.1:5432/ann" \
                             " --table items" \
                             " --column embedding" \
                             " -m %d" \
                             " --efc %d" \
                             " -d %d" \
                             " --metric-kind cos" \
-                            " --out /tmp/index.usearch" % (self._m, self._ef_construction, X.shape[1])
+                            " --out /tmp/index.usearch"  % (self._m, self._ef_construction, X.shape[1])
             subprocess.run(build_ix_cmd, shell=True, check=True, stdout=sys.stdout, stderr=sys.stderr)
 
             cur.execute(
@@ -52,7 +54,7 @@ class Lantern(BaseANN):
             #    "CREATE INDEX ON items USING hnsw (embedding dist_cos_ops) WITH (M = %d, ef_construction = %d, dim = %d)" % (self._m, self._ef_construction, X.shape[1])
             #)
         elif self._metric == "euclidean":
-            build_ix_cmd = "/tmp/lantern/build/lantern-create-index --uri postgresql://ann:ann@127.0.0.1:5432/ann" \
+            build_ix_cmd = "/tmp/lantern/build/lantern-cli create-index --uri postgresql://ann:ann@127.0.0.1:5432/ann" \
                             " --table items" \
                             " --column embedding" \
                             " -m %d" \

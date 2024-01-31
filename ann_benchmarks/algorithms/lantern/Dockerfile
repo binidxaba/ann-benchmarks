@@ -4,10 +4,13 @@ FROM ann-benchmarks
 
 RUN git clone --recursive https://github.com/lanterndata/lantern.git /tmp/lantern && \
   cd /tmp/lantern && \
-  git checkout tags/v0.0.11 -b v0.0.11
+  git checkout tags/v0.0.12 -b v0.0.12
+
 
 
 RUN apt-get -y install lsb-release wget curl
+RUN wget http://nz2.archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.20_amd64.deb && \
+  DEBIAN_FRONTEND=noninteractive dpkg -i libssl1.1_1.1.1f-1ubuntu2.20_amd64.deb
 RUN sh -c 'curl -fSsL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | tee /usr/share/keyrings/postgresql.gpg > /dev/null'
 RUN sh -c 'echo deb [arch=amd64,arm64,ppc64el signed-by=/usr/share/keyrings/postgresql.gpg] http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main | tee /etc/apt/sources.list.d/postgresql.list'
 
@@ -20,14 +23,16 @@ RUN cd /tmp/lantern && \
   cd build && \
   cmake .. && \
 	make install && \
-  wget https://github.com/lanterndata/lantern_extras/releases/download/0.0.1/lantern-create-index-0.0.1-amd64.tar && \
-  tar xf lantern-create-index-0.0.1-amd64.tar
+  wget https://github.com/lanterndata/lantern_extras/releases/download/0.0.12/lantern-cli-0.0.35-amd64.tar && \
+  tar xf lantern-cli-0.0.35-amd64.tar
+
 
 USER postgres
 RUN service postgresql start && \
     psql -c "CREATE USER ann WITH ENCRYPTED PASSWORD 'ann'" && \
     psql -c "CREATE DATABASE ann" && \
     psql -c "GRANT ALL PRIVILEGES ON DATABASE ann TO ann" && \
+    psql -c "GRANT pg_read_all_settings TO ann" && \
     psql -d ann -c "GRANT ALL ON SCHEMA public TO ann" && \
     psql -d ann -c "CREATE EXTENSION lantern" && \
     psql -c "ALTER USER ann SET maintenance_work_mem = '8GB'" && \
