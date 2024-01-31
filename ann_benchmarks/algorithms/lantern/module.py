@@ -31,10 +31,9 @@ class Lantern(BaseANN):
         print("copying data...")
         with cur.copy("COPY items (id, embedding) FROM STDIN") as copy:
             for i, embedding in enumerate(X):
-                if i >= 100000:
-                    break
                 copy.write_row((i, embedding.tolist()))
         print("creating index...")
+        t0 = time.time()
         if self._metric == "angular":
             build_ix_cmd = "/tmp/lantern/build/lantern-cli create-index --uri postgresql://ann:ann@127.0.0.1:5432/ann" \
                             " --table items" \
@@ -72,7 +71,8 @@ class Lantern(BaseANN):
             #)
         else:
             raise RuntimeError(f"unknown metric {self._metric}")
-        print("done!")
+        build_time = time.time() - t0
+        print(f"done! [Created index in {build_time} seconds]")
         self._cur = cur
 
     def set_query_arguments(self, ef_search):

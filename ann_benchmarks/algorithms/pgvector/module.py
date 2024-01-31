@@ -3,6 +3,7 @@ import sys
 
 import pgvector.psycopg
 import psycopg
+import time
 
 from ..base.module import BaseANN
 
@@ -32,10 +33,9 @@ class PGVector(BaseANN):
         print("copying data...")
         with cur.copy("COPY items (id, embedding) FROM STDIN") as copy:
             for i, embedding in enumerate(X):
-                if i >= 100000:
-                    break
                 copy.write_row((i, embedding))
         print("creating index...")
+        t0 = time.time()
         if self._metric == "angular":
             cur.execute("SET max_parallel_maintenance_workers = 7");
             cur.execute(
@@ -46,7 +46,8 @@ class PGVector(BaseANN):
             cur.execute("CREATE INDEX ON items USING hnsw (embedding vector_l2_ops) WITH (m = %d, ef_construction = %d)" % (self._m, self._ef_construction))
         else:
             raise RuntimeError(f"unknown metric {self._metric}")
-        print("done!")
+        build_time = time.time() - t0
+        print(f"done! [Created index in {build_time} seconds]")
         self._cur = cur
 
     def set_query_arguments(self, ef_search):

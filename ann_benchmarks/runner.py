@@ -330,6 +330,7 @@ def run_docker(
         cpuset_cpus=cpu_limit,
         mem_limit=mem_limit,
         detach=True,
+        shm_size="9G",
     )
     logger = logging.getLogger(f"annb.{container.short_id}")
 
